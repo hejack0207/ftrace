@@ -171,6 +171,8 @@ struct handle {
 
 int global_pid;
 
+void print_trace(void);
+
 void load_elf_section_range(struct handle *);
 void get_address_space(struct address_space *, int, char *);
 void MapElf32(struct handle *);
@@ -1498,7 +1500,7 @@ void get_address_space(struct address_space *addrspace, int pid, char *path)
 
 char * get_path(int pid)
 {
-	char tmp[64], buf[256];
+	char tmp[64], buf[1024];
 	char path[256], *ret, *p;
 	FILE *fd;
 	int i;
@@ -1537,6 +1539,7 @@ int validate_em_type(char *path)
 
 	if ((fd = open(path, O_RDONLY)) < 0) {
 		fprintf(stderr, "Could not open %s: %s\n", path, strerror(errno));
+		print_trace();
 		exit(-1);
 	}
 	
@@ -1663,7 +1666,7 @@ void sighandle(int sig)
 
 int main(int argc, char **argv, char **envp)
 {
-	int opt, i, pid, status, skip_getopt = 0;
+	int opt, i, pid, status;
 	struct handle handle;
 	char **p, *arch;
 	
@@ -1711,30 +1714,30 @@ usage:
 		}
 	}
 	
-	if (argv[1][0] != '-') {
-		
-		handle.path = xstrdup(argv[1]);
-		handle.args = (char **)HeapAlloc(sizeof(char *) * argc - 1);
-		
-		for (i = 0, p = &argv[1]; i != argc - 1; p++, i++) {
-			*(handle.args + i) = xstrdup(*p);
-		}
-		*(handle.args + i) = NULL;
-		skip_getopt = 1;
-			
-	} else {
-		handle.path = xstrdup(argv[2]);
-		handle.args = (char **)HeapAlloc(sizeof(char *) * argc - 1);
-		
-		for (i = 0, p = &argv[2]; i != argc - 2; p++, i++) {
-			*(handle.args + i) = xstrdup(*p);
-		}
-		*(handle.args + i) = NULL;
-	}
-
-		
-	if (skip_getopt)
-		goto begin;
+	/** if (argv[1][0] != '-') { */
+        /**  */
+	/**         handle.path = xstrdup(argv[1]); */
+	/**         handle.args = (char **)HeapAlloc(sizeof(char *) * argc - 1); */
+        /**  */
+	/**         for (i = 0, p = &argv[1]; i != argc - 1; p++, i++) { */
+	/**                 *(handle.args + i) = xstrdup(*p); */
+	/**         } */
+	/**         *(handle.args + i) = NULL; */
+	/**         skip_getopt = 1; */
+        /**  */
+	/** } else { */
+	/**         handle.path = xstrdup(argv[2]); */
+	/**         handle.args = (char **)HeapAlloc(sizeof(char *) * argc - 1); */
+        /**  */
+	/**         for (i = 0, p = &argv[2]; i != argc - 2; p++, i++) { */
+	/**                 *(handle.args + i) = xstrdup(*p); */
+	/**         } */
+	/**         *(handle.args + i) = NULL; */
+	/** } */
+        /**  */
+        /**  */
+	/** if (skip_getopt) */
+	/**         goto begin; */
 
 	while ((opt = getopt(argc, argv, "CSrhtvep:s")) != -1) {
 		switch(opt) {
@@ -1755,6 +1758,7 @@ usage:
 				break;
 			case 'p':
 				opts.attach++;
+				/** printf("-p %d specified, opts.attach=%d\n",atoi(optarg),opts.attach); */
 				handle.pid = atoi(optarg);
 				break;
 			case 's':
@@ -1769,7 +1773,20 @@ usage:
 				printf("Unknown option\n");
 				exit(0);
 		}
-	} 
+	}
+
+	if (optind <= argc -1){
+		handle.path = xstrdup(argv[optind]);
+		if (optind + 1 <= argc -1) {
+			handle.args = (char **)HeapAlloc(sizeof(char *) * argc -1 - optind);
+
+			for (i = 0, p = &argv[optind+1]; i <= (argc-1) - (optind+1); p++, i++) {
+				*(handle.args + i) = xstrdup(*p);
+			}
+			*(handle.args + i) = NULL;
+		}
+	}
+
 	
 begin:
 	if (opts.verbose) {
@@ -1832,7 +1849,7 @@ begin:
 		goto done;
 	}
 
-	/*  
+	/*
 	 * In this second instance we trace an
 	 * existing process id.
 	 */
