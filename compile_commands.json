@@ -1,0 +1,13 @@
+[
+    {
+        "arguments": [
+            "cc",
+            "-c",
+            "-o",
+            "ftrace",
+            "ftrace.c"
+        ],
+        "directory": "/f/codes/c/systools/ftrace",
+        "file": "ftrace.c"
+    }
+]
