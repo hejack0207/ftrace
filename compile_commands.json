@@ -3,6 +3,7 @@
         "arguments": [
             "cc",
             "-c",
+            "-g",
             "-o",
             "ftrace",
             "ftrace.c"
