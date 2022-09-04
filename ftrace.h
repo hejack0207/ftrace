@@ -23,7 +23,6 @@
 #include <sys/reg.h>
 #include <stdarg.h>
 
-
 /*
  * For our color coding output
  */
@@ -149,13 +148,6 @@ struct handle {
 };
 
 void print_trace(void);
-void load_elf_section_range(struct handle *);
-void get_address_space(struct address_space *, int, char *);
-void MapElf32(struct handle *);
-void MapElf64(struct handle *);
-void *HeapAlloc(unsigned int);
-char *xstrdup(const char *);
-char *get_section_by_range(struct handle *, unsigned long);
 void set_breakpoint(callstack_t *callstack);
 void remove_breakpoint(callstack_t *callstack);
 void callstack_init(callstack_t *callstack);
