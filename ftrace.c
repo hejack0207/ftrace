@@ -371,31 +371,6 @@ usage:
 		}
 	}
 	
-	/** if (argv[1][0] != '-') { */
-        /**  */
-	/**         handle.path = xstrdup(argv[1]); */
-	/**         handle.args = (char **)HeapAlloc(sizeof(char *) * argc - 1); */
-        /**  */
-	/**         for (i = 0, p = &argv[1]; i != argc - 1; p++, i++) { */
-	/**                 *(handle.args + i) = xstrdup(*p); */
-	/**         } */
-	/**         *(handle.args + i) = NULL; */
-	/**         skip_getopt = 1; */
-        /**  */
-	/** } else { */
-	/**         handle.path = xstrdup(argv[2]); */
-	/**         handle.args = (char **)HeapAlloc(sizeof(char *) * argc - 1); */
-        /**  */
-	/**         for (i = 0, p = &argv[2]; i != argc - 2; p++, i++) { */
-	/**                 *(handle.args + i) = xstrdup(*p); */
-	/**         } */
-	/**         *(handle.args + i) = NULL; */
-	/** } */
-        /**  */
-        /**  */
-	/** if (skip_getopt) */
-	/**         goto begin; */
-
 	while ((opt = getopt(argc, argv, "CSrhtvep:s")) != -1) {
 		switch(opt) {
 			case 'S':
