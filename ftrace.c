@@ -1444,7 +1444,8 @@ void get_address_space(struct address_space *addrspace, int pid, char *path)
 		 * Get executable text and data
 	 	 * segment addresses.
 		 */
-		if ((char *)strchr(buf, '/') && lc == 0) {
+		/** if ((char *)strchr(buf, '/') && lc == 0) { */
+		if ((char *)strchr(buf, '/') && strstr(buf, path) && strstr(buf, "r-xp")) {
 			for (i = 0; *p != '-'; i++, p++) 
 				addrstr[i] = *p;
 			addrstr[i] = '\0';
@@ -1512,11 +1513,16 @@ char * get_path(int pid)
 		exit(-1);
 	}
 	
-	if (fgets(buf, sizeof(buf), fd) == NULL)
+	if (fread(buf,1, sizeof(buf), fd) == NULL){
+		fprintf(stderr, "error read file %s\n", tmp);
 		return NULL;
+	}
 	p = strchr(buf, '/');
-	if (!p)
+	if (!p){
+		fprintf(stderr, "/ not found in %s\n", tmp);
+		fprintf(stderr, "buf %s\n", buf);
 		return NULL;
+	}
 	for (i = 0; *p != '\n' && *p != '\0'; p++, i++)
 		path[i] = *p;
 	path[i] = '\0';
