@@ -5,7 +5,7 @@ LDFLAGS=-rdynamic
 
 all: ftrace
 
-ftrace: ftrace.o debug.o
+ftrace: ftrace.o debug.o ptrace.o elf.o utils.o
 
 clean:
 	rm ftrace *.o
