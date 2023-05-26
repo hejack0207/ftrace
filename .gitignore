@@ -38,3 +38,4 @@ ftrace
 compile_commands.json
 *.o
 test
+tags

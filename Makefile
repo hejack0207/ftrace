@@ -5,3 +5,6 @@ ftrace: ftrace.c
 
 test: test.c
 	gcc $< -o $@
+
+ctags:
+	ctags -R
