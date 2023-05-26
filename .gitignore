@@ -34,8 +34,7 @@
 *.su
 
 sftp-config.json
-=======
 ftrace
 compile_commands.json
 *.o
->>>>>>> 32f146278e7d959f3bedb812cfec92ac0cb7ac80
+test
