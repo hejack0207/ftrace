@@ -9,18 +9,19 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include <sys/types.h>
-#include <sys/ptrace.h>
-#include <elf.h>
-#include <sys/mman.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <stdarg.h>
+
+#include <sys/types.h>
+#include <sys/ptrace.h>
 #include <sys/wait.h>
 #include <sys/user.h>
 #include <sys/stat.h>
 #include <sys/reg.h>
-#include <stdarg.h>
+#include <sys/mman.h>
 
+#include <elf.h>
 
 /*
  * For our color coding output
