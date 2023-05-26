@@ -133,12 +133,12 @@ typedef struct breakpoint {
 } breakpoint_t;
 
 typedef struct calldata {
-    char *symname;
-    char *string;
-    unsigned long vaddr;
-    unsigned long retaddr;
+  char *symname;
+  char *string;
+  unsigned long vaddr;
+  unsigned long retaddr;
   //  unsigned int depth;
-    breakpoint_t breakpoint;
+  breakpoint_t breakpoint;
 } calldata_t;
 
 typedef struct callstack {
@@ -183,7 +183,7 @@ char *get_section_by_range(struct handle *, unsigned long);
 void set_breakpoint(callstack_t *callstack)
 {
   int status;
-    long orig = ptrace(PTRACE_PEEKTEXT, global_pid, callstack->calldata[callstack->depth].retaddr);
+  long orig = ptrace(PTRACE_PEEKTEXT, global_pid, callstack->calldata[callstack->depth].retaddr);
   long trap;
 
   trap = (orig & ~0xff) | 0xcc;
@@ -332,8 +332,6 @@ char * xfmtstrdup(char *fmt, ...)
   return s;
 }
 
-
-
 /*
  * ptrace functions
  */
@@ -341,7 +339,6 @@ char * xfmtstrdup(char *fmt, ...)
 
 int pid_read(int pid, void *dst, const void *src, size_t len)
 {
-
   int sz = len / sizeof(void *);
   int rem = len % sizeof(void *);
   unsigned char *s = (unsigned char *)src;
@@ -351,9 +348,9 @@ int pid_read(int pid, void *dst, const void *src, size_t len)
   while (sz-- != 0) {
     word = ptrace(PTRACE_PEEKTEXT, pid, s, NULL);
     if (word == -1 && errno)
-             return -1;
+      return -1;
 
-         *(long *)d = word;
+    *(long *)d = word;
     s += sizeof(long);
     d += sizeof(long);
   }
@@ -527,7 +524,7 @@ uint8_t *get_section_data(struct handle *h, const char *section_name)
       break;
   }
 
-    return NULL;
+  return NULL;
 }
 
 char *get_dt_strtab_name(struct handle *h, int xset)
@@ -569,7 +566,7 @@ void parse_dynamic_dt_needed(struct handle *h)
         }
       }
       break;
-    }
+  }
 }
 
 /*
@@ -1380,13 +1377,8 @@ void examine_process(struct handle *h)
         free(argstr);
         argstr = NULL;
       }
-
-
     }
-
-
   }
-
 }
 
 void MapElf32(struct handle *h)
@@ -1416,7 +1408,7 @@ void MapElf32(struct handle *h)
 
   h->elf32->StringTable = (char *)&h->map[h->elf32->shdr[h->elf32->ehdr->e_shstrndx].sh_offset];
 
-   if (h->elf32->ehdr->e_shnum > 0 && h->elf32->ehdr->e_shstrndx != SHN_UNDEF)
+  if (h->elf32->ehdr->e_shnum > 0 && h->elf32->ehdr->e_shstrndx != SHN_UNDEF)
     load_elf_section_range(h);
 }
 
@@ -1654,6 +1646,7 @@ void MapElf64(struct handle *h)
     load_elf_section_range(h);
 
 }
+
 void sighandle(int sig)
 {
   fprintf(stdout, "Caught signal ctrl-C, detaching...\n");
