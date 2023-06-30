@@ -36,3 +36,9 @@ sftp-config.json
 
 ftrace
 test
+.clangd/
+.gitginore
+compile_commands.json
+tags
+test.strip
+test.syms

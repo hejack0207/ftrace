@@ -115,6 +115,7 @@ struct elf *readelf(int fd) {
 	e->syms = (Elf64_Sym *) &e->file[sym_hdr->sh_offset];
 	e->n_syms = sym_hdr->sh_size / sym_hdr->sh_entsize;
 	e->sym_names = &e->file[e->shdrs[sym_hdr->sh_link].sh_offset];
+	return NULL;
     }
 
     return e;

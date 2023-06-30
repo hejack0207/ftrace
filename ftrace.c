@@ -19,7 +19,7 @@ typedef struct callstack {
     struct callstack *prev;
 } callstack_t;
 
-const uint8_t trap_inst = 0xCC; 
+const uint8_t trap_inst = 0xCC;
 
 const char *blacklist[] = {"", "frame_dummy", "register_tm_clones",
                            "deregister_tm_clones", "__do_global_dtors_aux"};
@@ -46,6 +46,7 @@ callstack_t *call_stack = NULL;
 // globals from command line arguments
 bool show_ret = false;
 char **traced_argv;
+char *symfile_path;
 char *call_fmt = "%s\n";
 char *ret_fmt = NULL;
 
@@ -58,6 +59,7 @@ void usage(char *prog) {
            "  -C          - adds colored output\n"
            "  -H <file>   - header file to use for function logging\n"
            "  -R          - display function return values\n"
+           "  -s          - path of file containing symbol infos\n"
            "  -o <file>   - specifies output file (replaces stderr)\n"
            "  -h          - display this message\n\n",
 
@@ -224,7 +226,7 @@ int main(int argc, char **argv) {
 
     if (argc == 1) usage(argv[0]);
 
-    while ((opt = getopt(argc, argv, "+CH:Ro:h")) != -1) {
+    while ((opt = getopt(argc, argv, "+CH:Rs:o:h")) != -1) {
         switch (opt) {
             case 'C':
                 colored = true;
@@ -236,6 +238,9 @@ int main(int argc, char **argv) {
             case 'R':
                 call_fmt = ">> %s\n";
                 ret_fmt = "<< %s = %d\n";
+                break;
+            case 's':
+		symfile_path = optarg;
                 break;
             case 'o':
                 trace_fd = open(optarg, O_WRONLY | O_CREAT | O_TRUNC);
@@ -256,6 +261,6 @@ int main(int argc, char **argv) {
 
     if (pid == 0) traced();
     else trace(pid);
-    
+
     return 0;
 }
