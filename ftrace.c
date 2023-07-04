@@ -155,9 +155,9 @@ void trace(pid_t pid)
     if (e == NULL){
 	if (symfile_path != NULL){
 		fd = open(symfile_path, O_RDONLY);
-		if (fd == -1) error("failed to open sym file");
+		if (fd == -1) error("failed to open sym file: %s", symfile_path);
 		e = readelf(fd);
-		if (e == NULL) error("failed to read sym file for symbols");
+		if (e == NULL) error("failed to read sym file for symbols: %s", symfile_path);
 	}else{
 		error("failed to read elf file for symbols and sym file not specified");
 	}
