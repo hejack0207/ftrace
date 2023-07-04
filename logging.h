@@ -8,6 +8,7 @@
 #define RED "\x1b[31m"
 #define GREEN "\x1b[32m"
 #define YELLOW "\x1b[33m"
+#define BLUE "\x1b[34m"
 #define RESET "\x1b[0m"
 
 // this flag determines whether these functions actually print anything
@@ -28,16 +29,17 @@ void trace_print(char *color, char *msg, ...) {
 	if (colored) dprintf(trace_fd, "%s", RESET);
 }
 
-// logs an error to the console and quits - only for extreme errors [red]
-void error(char *msg, ...) {
+// logs an info [green]
+void debug(char *msg, ...) {
 	va_list args;
+
+	if (!verbose) return;
 
 	va_start(args, msg);
 
-	printf("%s[!] Error: ", RED);
+	printf("%s[+] ", BLUE);
 	vprintf(msg, args);
-	printf("%s\n", RESET);
-	exit(1);
+	printf("%s\n", BLUE);
 }
 
 // logs an info [green]
@@ -64,4 +66,16 @@ void warn(char *msg, ...) {
 	printf("%s[-] ", YELLOW);
 	vprintf(msg, args);
 	printf("%s\n", RESET);
+}
+
+// logs an error to the console and quits - only for extreme errors [red]
+void error(char *msg, ...) {
+	va_list args;
+
+	va_start(args, msg);
+
+	printf("%s[!] Error: ", RED);
+	vprintf(msg, args);
+	printf("%s\n", RESET);
+	exit(1);
 }
