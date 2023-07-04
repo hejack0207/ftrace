@@ -46,13 +46,14 @@ callstack_t *call_stack = NULL;
 // globals from command line arguments
 bool show_ret = false;
 char **traced_argv;
-char *symfile_path;
+char *symfile_path = NULL;
 char *call_fmt = "%s\n";
 char *ret_fmt = NULL;
 
 pid_t child;
 
-void usage(char *prog) {
+void usage(char *prog)
+{
     printf("Usage: %s <program> [arg 1] [arg2] ...\n\n"
 
            "Optional parameters:\n"
@@ -67,7 +68,8 @@ void usage(char *prog) {
     exit(1);
 }
 
-void add_call(char sig[SIG_LEN]) {
+void add_call(char sig[SIG_LEN])
+{
     callstack_t *new_call;
 
     new_call = malloc(sizeof(*new_call));
@@ -76,12 +78,14 @@ void add_call(char sig[SIG_LEN]) {
     call_stack = new_call;
 }
 
-char *get_call() {
+char *get_call()
+{
     if (call_stack == NULL) return NULL;
     else return call_stack->sig;
 }
 
-void delete_call() {
+void delete_call()
+{
     callstack_t *tmp;
 
     if (call_stack == NULL) return;
@@ -91,16 +95,19 @@ void delete_call() {
     free(tmp);
 }
 
-int add_breakpoint(void *addr) {
+int add_breakpoint(void *addr)
+{
     uint8_t bp[1] = {trap_inst};
     return write_data(child, addr, bp, sizeof(bp));
 }
 
-int restore_code(void *addr, int len, struct elf *e) {
+int restore_code(void *addr, int len, struct elf *e)
+{
     return write_data(child, addr, bytes_from_addr_in_section(e, addr, ".text"), len);
 }
 
-bool in_blacklist(char *name) {
+bool in_blacklist(char *name)
+{
     int i;
 
     for (i = 0; i < sizeof(blacklist) / sizeof(blacklist[0]); i++) {
@@ -110,7 +117,8 @@ bool in_blacklist(char *name) {
     return false;
 }
 
-int register_functions(struct elf *e) {
+int register_functions(struct elf *e)
+{
     int i;
 
     for (i = 0; i < e->n_syms; i++) {
@@ -123,11 +131,13 @@ int register_functions(struct elf *e) {
     return 0;
 }
 
-void print_depth(int d) {
+void print_depth(int d)
+{
     while (d--) trace_print(RESET, " ");
 }
 
-void trace(pid_t pid) {
+void trace(pid_t pid)
+{
     int status, fd;
     struct user_regs_struct regs;
     int sym_i, depth;
@@ -142,7 +152,16 @@ void trace(pid_t pid) {
     if (fd == -1) error("failed to open file");
 
     e = readelf(fd);
-    if (e == NULL) error("failed to read elf file for symbols");
+    if (e == NULL){
+	if (symfile_path != NULL){
+		fd = open(symfile_path, O_RDONLY);
+		if (fd == -1) error("failed to open sym file");
+		e = readelf(fd);
+		if (e == NULL) error("failed to read sym file for symbols");
+	}else{
+		error("failed to read elf file for symbols and sym file not specified");
+	}
+    }
 
     wait(&status);
 
@@ -215,12 +234,14 @@ void trace(pid_t pid) {
     }
 }
 
-void traced() {
+void traced()
+{
     if (ptrace(PTRACE_TRACEME, NULL, NULL, NULL) == -1) error("traceme failed");
     if (execvp(traced_argv[0], traced_argv) == -1) error("could not execute file");
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv)
+{
     pid_t pid;
     char opt;
 
