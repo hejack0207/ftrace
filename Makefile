@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-pg
+CFLAGS=
 
 DEPS=functools.h readelf.h ptrace_helpers.h logging.h
 
